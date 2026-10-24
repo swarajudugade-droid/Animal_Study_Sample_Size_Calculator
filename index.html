@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Animal Study Sample Size Calculator | PharmaCalc</title>
+<style>
+:root{--navy:#12304a;--blue:#1769aa;--teal:#087f8c;--bg:#f4f7fb;--ink:#172536;--muted:#5d6b7a;--line:#dbe3ec;--card:#fff;--green:#e7f6ee;--amber:#fff5dc;--red:#fff0ef}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(120deg,#102c46,#1769aa);color:#fff;padding:30px 20px 26px}header .wrap,main,.footer-wrap{max-width:1180px;margin:auto}header h1{margin:0 0 8px;font-size:clamp(26px,4vw,38px);line-height:1.15}header p{max-width:850px;margin:0;color:#e5eff9}
+.pill{display:inline-block;border:1px solid #ffffff60;border-radius:99px;padding:4px 10px;font-size:12px;margin-bottom:12px}
+main{padding:22px 16px 34px}.notice{padding:13px 15px;border-radius:12px;background:var(--amber);border:1px solid #f0d58c;margin-bottom:18px}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:18px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 4px 16px #17334a0a;margin-bottom:18px}
+h2{font-size:20px;margin:0 0 14px;color:var(--navy)}h3{font-size:16px;margin:18px 0 8px;color:var(--navy)}
+label{display:block;font-weight:650;font-size:13px;margin-bottom:5px}input,select{width:100%;padding:10px 11px;border:1px solid #cbd6e2;border-radius:9px;background:white;font:inherit;color:var(--ink)}input:focus,select:focus{outline:3px solid #1769aa25;border-color:var(--blue)}
+.field{margin-bottom:13px}.hint{display:block;font-size:12px;color:var(--muted);margin-top:4px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+button{border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer}.primary{background:var(--blue);color:white}.secondary{background:#eaf1f8;color:var(--navy)}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+.result{background:#edf7ff;border:1px solid #c7e3f7;border-radius:14px;padding:16px;margin-bottom:14px}.result .big{font-size:34px;font-weight:800;color:#075b93;line-height:1.2}.result .sub{color:#3f6076;font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.kpi{border:1px solid var(--line);border-radius:10px;padding:10px}.kpi small{display:block;color:var(--muted)}.kpi strong{font-size:19px}
+.formula{background:#f6f8fb;border:1px solid var(--line);padding:12px;border-radius:10px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;font-size:13px}
+.good{background:var(--green);border:1px solid #b9e4ca;padding:12px;border-radius:10px}.warning{background:var(--amber);border:1px solid #f0d58c;padding:12px;border-radius:10px}
+ul{padding-left:20px}li{margin:5px 0}.muted{color:var(--muted)}.hidden{display:none!important}
+details{border-top:1px solid var(--line);padding:11px 0}summary{font-weight:700;cursor:pointer}
+footer{background:#102c46;color:#dce7f0;padding:22px 16px;font-size:12px}footer p{margin:5px 0}.small{font-size:12px}.tag{display:inline-block;background:#eaf1f8;color:#234d70;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.grid2,.grid3,.kpis{grid-template-columns:1fr}.card{padding:15px}header{padding:24px 16px}}
+@media print{body{background:#fff}.actions,header .pill{display:none}.card{box-shadow:none;break-inside:avoid}header{background:#fff;color:#000;padding:10px 0}header p{color:#333}main{padding:8px 0}.layout{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<span class="pill">PHARMACALC • RESEARCH TOOL</span>
+<h1>Animal Study Sample Size Calculator</h1>
+<p>Plan statistically justified animal experiments using an explicit primary outcome, expected effect, variability, significance level, and desired power. Includes attrition adjustment, per-group allocation, formulas, and a planning report.</p>
+</div></header>
+<main>
+<div class="notice"><strong>Important:</strong> This is a planning aid, not a substitute for a statistician, veterinarian, Institutional Animal Ethics Committee (IAEC), or applicable CPCSEA requirements. Enter values from relevant literature, pilot data, or a justified scientific hypothesis. Do not choose an effect size simply to obtain a smaller animal count.</div>
+<div class="layout">
+<section>
+<div class="card">
+<h2>1. Study design and assumptions</h2>
+<div class="field"><label for="design">Primary outcome / design</label>
+<select id="design">
+<option value="independent">Two independent groups — continuous outcome</option>
+<option value="paired">Paired / repeated measurements — continuous outcome</option>
+<option value="onesample">One group compared with a reference mean</option>
+<option value="proportions">Two independent groups — binary outcome / proportion</option>
+<option value="correlation">Correlation between two continuous variables</option>
+</select><span class="hint">Choose the design matching the primary endpoint and experimental unit.</span></div>
+<div class="field"><label for="outcome">Primary outcome (e.g., paw edema, glucose, lesion score)</label><input id="outcome" value="Primary continuous endpoint" maxlength="120"></div>
+<div class="field"><label for="species">Animal species / model</label><input id="species" value="Rat" maxlength="80"></div>
+<div class="grid2" id="continuousFields">
+<div class="field"><label for="sd">Expected standard deviation (SD)</label><input id="sd" type="number" min="0.000001" step="any" value="10"><span class="hint">Same units as the outcome.</span></div>
+<div class="field" id="deltaWrap"><label for="delta">Minimum meaningful difference (Δ)</label><input id="delta" type="number" min="0.000001" step="any" value="10"><span class="hint">Difference worth detecting, not just any difference.</span></div>
+</div>
+<div class="grid2 hidden" id="pairedFields">
+<div class="field"><label for="sddiff">SD of within-animal differences</label><input id="sddiff" type="number" min="0.000001" step="any" value="8"></div>
+<div class="field"><label for="deltap">Minimum meaningful paired difference</label><input id="deltap" type="number" min="0.000001" step="any" value="6"></div>
+</div>
+<div class="grid2 hidden" id="propFields">
+<div class="field"><label for="p1">Expected proportion, group 1 (0–1)</label><input id="p1" type="number" min="0.0001" max="0.9999" step="0.01" value="0.30"></div>
+<div class="field"><label for="p2">Expected proportion, group 2 (0–1)</label><input id="p2" type="number" min="0.0001" max="0.9999" step="0.01" value="0.60"></div>
+</div>
+<div class="grid2 hidden" id="corrFields">
+<div class="field"><label for="rho">Expected correlation (r)</label><input id="rho" type="number" min="-0.99" max="0.99" step="0.01" value="0.60"></div>
+<div class="field"><label for="rhonull">Null correlation (r₀)</label><input id="rhonull" type="number" min="-0.99" max="0.99" step="0.01" value="0"></div>
+</div>
+<div class="grid2">
+<div class="field"><label for="alpha">Significance level (two-sided α)</label><select id="alpha"><option value="0.10">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select></div>
+<div class="field"><label for="power">Statistical power</label><select id="power"><option value="0.80" selected>80%</option><option value="0.85">85%</option><option value="0.90">90%</option><option value="0.95">95%</option></select></div>
+</div>
+<div class="grid2">
+<div class="field"><label for="allocation">Allocation ratio (group 2 : group 1)</label><input id="allocation" type="number" min="0.1" max="10" step="0.1" value="1"><span class="hint">1 means equal group sizes. For paired / one-group designs, ignored.</span></div>
+<div class="field"><label for="attrition">Expected attrition / unusable data (%)</label><input id="attrition" type="number" min="0" max="90" step="1" value="10"><span class="hint">Animals added to compensate for anticipated losses; justify ethically.</span></div>
+</div>
+<div class="actions"><button class="primary" id="calculate">Calculate sample size</button><button class="secondary" id="reset">Reset example</button></div>
+</div>
+<div class="card">
+<h2>2. Interpretation and planning checks</h2>
+<div class="field"><label for="unit">Experimental unit</label><select id="unit"><option>Individual animal</option><option>Litter</option><option>Cage / group-housed unit</option><option>Other (specify in notes)</option></select><span class="hint">The experimental unit is the independently randomized unit—not necessarily each measurement.</span></div>
+<div class="field"><label for="notes">Study notes / justification</label><input id="notes" placeholder="e.g., SD from published study; primary endpoint at 4 hours" maxlength="300"></div>
+<div class="warning"><strong>Before finalizing:</strong> define one primary outcome and analysis plan; account for litter/cage clustering, repeated measures, multiple primary comparisons, sex, exclusions, randomization, blinding, and humane endpoints. The simple formulas below do not automatically adjust for these factors.</div>
+</div>
+</section>
+<aside>
+<div class="card">
+<h2>Calculated sample size</h2>
+<div class="result" aria-live="polite">
+<div class="sub">Required analyzable sample</div>
+<div class="big" id="total">22 animals</div>
+<div id="pergroup">11 per group before attrition</div>
+<div class="sub" id="adjusted">Adjusted for 10% anticipated attrition</div>
+</div>
+<div class="kpis">
+<div class="kpi"><small>Group 1 to enroll</small><strong id="g1">13</strong></div>
+<div class="kpi"><small>Group 2 to enroll</small><strong id="g2">13</strong></div>
+<div class="kpi"><small>Total to enroll</small><strong id="enroll">26</strong></div>
+<div class="kpi"><small>Alpha / power</small><strong id="ap">0.05 / 80%</strong></div>
+</div>
+<h3>Formula used</h3><div class="formula" id="formula">n ≈ 2 × (Zα/2 + Zβ)² × SD² / Δ²</div>
+<h3>Interpretation</h3><div id="interpret" class="good">For the entered assumptions, plan the displayed number as the initial estimate. Round up to whole animals.</div>
+<div class="actions"><button class="primary" id="download">Download planning report (.txt)</button><button class="secondary" id="print">Print / Save PDF</button></div>
+<p class="small muted">Results are approximate normal-theory estimates. Small samples, non-normal outcomes, bounded data, count data, clustered housing, and complex designs may require specialist methods or software.</p>
+</div>
+<div class="card">
+<h2>How to use it responsibly</h2>
+<ol>
+<li><strong>Specify the primary endpoint.</strong> Avoid powering a study for many outcomes without a multiplicity plan.</li>
+<li><strong>Choose a meaningful effect.</strong> Use prior studies, pilot evidence, or a scientific/clinical justification.</li>
+<li><strong>Estimate variability.</strong> Use an SD from a comparable model and measurement time point.</li>
+<li><strong>Set alpha and power.</strong> Common planning values are α = 0.05 and power = 80–90%, but the choice must be justified.</li>
+<li><strong>Adjust for attrition carefully.</strong> Use expected, evidence-based losses and explain them in the protocol.</li>
+<li><strong>Review with the statistician and IAEC.</strong> Follow institutional, CPCSEA, and applicable legal requirements.</li>
+</ol>
+</div>
+<div class="card">
+<h2>Design-specific notes</h2>
+<details open><summary>Independent continuous groups</summary><p>Approximate two-group comparison of means. Assumes independent observations, common SD, a continuous outcome, and a prespecified difference. Unequal allocation is approximated using the selected ratio.</p></details>
+<details><summary>Paired / repeated measurements</summary><p>Uses the SD of within-animal differences. It is suitable only when observations are genuinely paired. Repeated-measures designs with multiple time points may need a model-based calculation.</p></details>
+<details><summary>Binary outcomes</summary><p>Approximate two-proportion comparison. For rare events, very small samples, or complete separation, exact or simulation-based methods may be preferable.</p></details>
+<details><summary>Correlation</summary><p>Uses Fisher's z transformation to estimate the sample size for testing an expected correlation against a null correlation.</p></details>
+</div>
+</aside>
+</div>
+<div class="card">
+<h2>References and reporting checklist</h2>
+<ul>
+<li><strong>ARRIVE Guidelines 2.0</strong> — report study design, sample-size rationale, inclusion/exclusion criteria, randomization, blinding, outcome measures, and statistical methods.</li>
+<li><strong>NC3Rs Experimental Design Assistant (EDA)</strong> — supports planning animal experiments and identifying design issues.</li>
+<li><strong>CPCSEA / institutional IAEC guidance</strong> — check current applicable requirements for animal experimentation in India before protocol submission.</li>
+</ul>
+<p class="small muted">This application does not fetch or validate reference values and does not replace formal protocol review. Confirm current guidance from the official organizations and your institution.</p>
+</div>
+</main>
+<footer><div class="footer-wrap">
+<p><strong>PharmaCalc • Animal Study Sample Size Calculator</strong></p>
+<p>Designed and Created by Dr. Babaraj Udugade and Mrs. Swati Udugade</p>
+<p>Copyright © Maharashtra Academy of Skills and Knowledge • Registered under MSME</p>
+<p>Educational and research-planning support only. Not medical, veterinary, statistical, or regulatory approval.</p>
+</div></footer>
+<script>
+const $=id=>document.getElementById(id);
+const fields=['design','outcome','species','sd','delta','sddiff','deltap','p1','p2','rho','rhonull','alpha','power','allocation','attrition','unit','notes'];
+const z={0.10:1.64485362695147,0.05:1.95996398454005,0.01:2.5758293035489};
+function normInv(p){ // Acklam approximation
+ if(p<=0||p>=1) throw Error('Probability must be between 0 and 1.');
+ const a=[-39.6968302866538,220.946098424521,-275.928510446969,138.357751867269,-30.6647980661472,2.50662827745924];
+ const b=[-54.4760987982241,161.585836858041,-155.698979859887,66.8013118877197,-13.2806815528857];
+ const c=[-0.00778489400243,-0.322396458041136,-2.40075827716184,-2.54973253934373,4.37466414146497,2.93816398269878];
+ const d=[0.007784695709041,0.32246712907004,2.445134137143,3.75440866190742];
+ const plow=.02425,phigh=1-plow;let q,r;
+ if(p<plow){q=Math.sqrt(-2*Math.log(p));return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+ if(p>phigh){q=Math.sqrt(-2*Math.log(1-p));return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+ q=p-.5;r=q*q;return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+}
+function val(id){return Number($(id).value)}
+function showFields(){
+ const d=$('design').value;
+ $('continuousFields').classList.toggle('hidden',d==='proportions'||d==='correlation'||d==='paired');
+ $('pairedFields').classList.toggle('hidden',d!=='paired');
+ $('propFields').classList.toggle('hidden',d!=='proportions');
+ $('corrFields').classList.toggle('hidden',d!=='correlation');
+ $('deltaWrap').classList.toggle('hidden',d==='onesample');
+ $('allocation').disabled=['paired','onesample','correlation'].includes(d);
+}
+function calculate(){
+ try{
+ const design=$('design').value, alpha=val('alpha'), power=val('power'), attr=val('attrition'), ratio=val('allocation');
+ if(!(attr>=0&&attr<100)) throw Error('Attrition must be from 0% to less than 100%.');
+ if(!(ratio>0)) throw Error('Allocation ratio must be greater than zero.');
+ const za=normInv(1-alpha/2), zb=normInv(power), zsum=za+zb;
+ let n1=0,n2=0,formula='',desc='';
+ if(design==='independent'){
+  const sd=val('sd'), delta=val('delta');if(!(sd>0&&delta>0))throw Error('SD and meaningful difference must be greater than zero.');
+  const r=ratio; n1=Math.ceil((zsum*zsum*sd*sd*(1+1/r))/(delta*delta)); n2=Math.ceil(n1*r);
+  formula='n₁ ≈ (Zα/2 + Zβ)² × SD² × (1 + 1/r) / Δ²; n₂ = r × n₁';
+  desc='Approximate two-sided comparison of two independent means, with equal variance and allocation ratio r = group 2 / group 1.';
+ }else if(design==='paired'){
+  const sd=val('sddiff'),delta=val('deltap');if(!(sd>0&&delta>0))throw Error('SD of differences and paired difference must be greater than zero.');
+  n1=Math.ceil(zsum*zsum*sd*sd/(delta*delta));n2=0;
+  formula='n pairs ≈ (Zα/2 + Zβ)² × SDdifference² / Δ²';
+  desc='Approximate paired comparison. Enroll this many complete pairs; if each pair is one animal measured twice, the number of animals equals the number of pairs.';
+ }else if(design==='onesample'){
+  const sd=val('sd'),delta=val('delta');if(!(sd>0&&delta>0))throw Error('SD and meaningful difference must be greater than zero.');
+  n1=Math.ceil(zsum*zsum*sd*sd/(delta*delta));n2=0;
+  formula='n ≈ (Zα/2 + Zβ)² × SD² / Δ²';
+  desc='Approximate one-sample mean compared with a fixed reference. Verify that a one-sample design is scientifically appropriate.';
+ }else if(design==='proportions'){
+  const p1=val('p1'),p2=val('p2');if(!(p1>0&&p1<1&&p2>0&&p2<1&&p1!==p2))throw Error('Enter two different proportions, each greater than 0 and less than 1.');
+  const r=ratio,pbar=(p1+r*p2)/(1+r),qbar=1-pbar;
+  const numerator=(za*Math.sqrt((1+1/r)*pbar*qbar)+zb*Math.sqrt(p1*(1-p1)+p2*(1-p2)/r))**2;
+  n1=Math.ceil(numerator/((p1-p2)**2));n2=Math.ceil(n1*r);
+  formula='n₁ ≈ [Zα/2√((1+1/r)P̄Q̄) + Zβ√(p₁q₁ + p₂q₂/r)]² / (p₁−p₂)²';
+  desc='Approximate two-proportion test using a normal approximation. Small or rare-event studies may need exact or simulation-based methods.';
+ }else{
+  const rho=val('rho'),rho0=val('rhonull');if(!(Math.abs(rho)<1&&Math.abs(rho0)<1&&rho!==rho0))throw Error('Enter different expected and null correlations between −1 and 1.');
+  const fisher=x=>0.5*Math.log((1+x)/(1-x));
+  n1=Math.ceil(3+((za+zb)/(fisher(rho)-fisher(rho0)))**2);n2=0;
+  formula='n ≈ 3 + [(Zα/2 + Zβ) / (atanh(r) − atanh(r₀))]²';
+  desc='Approximate sample size for testing a Pearson correlation using Fisher z transformation. Assumes independent pairs and approximate bivariate normality.';
+ }
+ const adj=n=>Math.ceil(n/(1-attr/100));
+ const g1=adj(n1),g2=n2?adj(n2):0,total=g1+g2,analyzable=n1+n2;
+ $('total').textContent=analyzable+' '+(design==='paired'?'pairs':'animals / units');
+ $('pergroup').textContent=design==='paired'?n1+' complete pairs required before attrition':design==='onesample'||design==='correlation'?n1+' required in one sample':n1+' in group 1 + '+n2+' in group 2 before attrition';
+ $('adjusted').textContent=attr?`Enrollment estimate adjusted for ${attr}% anticipated attrition`:'No attrition adjustment applied';
+ $('g1').textContent=g1;$('g2').textContent=n2?g2:'—';$('enroll').textContent=design==='paired'?g1+' pairs':total+' total';$('ap').textContent=alpha+' / '+Math.round(power*100)+'%';
+ $('formula').textContent=formula;
+ $('interpret').textContent=desc+' This is an approximate planning estimate; final numbers should be confirmed for the exact design and analysis.';
+ $('interpret').className='good';
+ window.lastReport=makeReport({design,alpha,power,attr,ratio,n1,n2,g1,g2,total,formula,desc,analyzable});
+ }catch(e){$('interpret').textContent=e.message;$('interpret').className='warning';}
+}
+function makeReport(x){
+ return `ANIMAL STUDY SAMPLE SIZE PLANNING REPORT\nGenerated: ${new Date().toLocaleString()}\n\nStudy species/model: ${$('species').value}\nPrimary outcome: ${$('outcome').value}\nDesign: ${$('design').selectedOptions[0].text}\nExperimental unit: ${$('unit').value}\nNotes: ${$('notes').value||'Not supplied'}\n\nASSUMPTIONS\nAlpha (two-sided): ${x.alpha}\nPower: ${Math.round(x.power*100)}%\nAllocation ratio (group 2 : group 1): ${x.ratio}\nExpected attrition: ${x.attr}%\nSD: ${$('sd').value}; meaningful difference: ${$('delta').value}\nPaired SD of differences: ${$('sddiff').value}; paired difference: ${$('deltap').value}\nProportions: ${$('p1').value} vs ${$('p2').value}\nCorrelation: ${$('rho').value}; null correlation: ${$('rhonull').value}\n\nESTIMATE\nRequired analyzable n: ${x.n1}${x.n2?' + '+x.n2:''}\nEnrollment after attrition: ${x.g1}${x.n2?' + '+x.g2:''}\nTotal enrollment estimate: ${x.total}\nFormula: ${x.formula}\nInterpretation: ${x.desc}\n\nIMPORTANT LIMITATIONS\nApproximate formula; confirm with a statistician for the actual study design. Does not automatically adjust for clustering, multiple comparisons, repeated-measures covariance, non-normal outcomes, or exclusions. The experimental unit must match the randomization and analysis unit. Obtain IAEC approval and follow current applicable CPCSEA and institutional requirements.\n\nDesigned and Created by Dr. Babaraj Udugade and Mrs. Swati Udugade\nCopyright © Maharashtra Academy of Skills and Knowledge\nRegistered under MSME\n`;
+}
+$('calculate').addEventListener('click',calculate);
+$('design').addEventListener('change',()=>{showFields();calculate()});
+$('reset').addEventListener('click',()=>{ $('design').value='independent';$('outcome').value='Primary continuous endpoint';$('species').value='Rat';$('sd').value=10;$('delta').value=10;$('sddiff').value=8;$('deltap').value=6;$('p1').value=.3;$('p2').value=.6;$('rho').value=.6;$('rhonull').value=0;$('alpha').value=.05;$('power').value=.8;$('allocation').value=1;$('attrition').value=10;$('unit').selectedIndex=0;$('notes').value='';showFields();calculate()});
+$('download').addEventListener('click',()=>{calculate();if(!window.lastReport)return;const blob=new Blob([window.lastReport],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Animal_Study_Sample_Size_Report.txt';a.click();URL.revokeObjectURL(url)});
+$('print').addEventListener('click',()=>window.print());
+fields.forEach(id=>$(id).addEventListener('change',()=>{if(id==='design')showFields();calculate()}));
+showFields();calculate();
+</script>
+</body></html>
